@@ -1,30 +1,38 @@
-package vn.hoidanit.laptopshop.controller;
+package vn.hoidanit.laptopshop.controller.admin;
+
 
 import java.util.List;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.ServletContext;
+import jakarta.validation.Valid;
 import vn.hoidanit.laptopshop.domain.User;
-import vn.hoidanit.laptopshop.repository.UserRepository;
+import vn.hoidanit.laptopshop.service.UploadService;
 import vn.hoidanit.laptopshop.service.UserService;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 public class UserController {
   private final UserService userService;
+  private final UploadService uploadService;
+  private final PasswordEncoder passwordEncoder;
 
-  public UserController(UserService userService) {
-    this.userService = userService;
-
-  }
+  public UserController(
+            UserService userService, 
+            UploadService uploadService,
+            PasswordEncoder passwordEncoder) {
+        this.passwordEncoder=passwordEncoder;
+        this.userService = userService;
+        this.uploadService= uploadService;
+    }
 
   @RequestMapping("/")
   public String getHomePage(Model model) {
@@ -38,17 +46,39 @@ public class UserController {
     return "admin/user/create";
   }
 
-  @RequestMapping("/admin/user/create")
+  @GetMapping("/admin/user/create")
   public String getUserCreatePage(Model model) {
+    model.addAttribute("newUser", new User());
     return "admin/user/create";
   }
 
-  @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
-  public String CreateUserPage(Model model, @ModelAttribute("newUser") User hoidanit) {
-    System.out.println("khach" + hoidanit);
-    userService.handleSaveUser(hoidanit);
-    return "redirect:/admin/user";
-  }
+  @PostMapping(value = "/admin/user/create")
+  public String createUserPage(Model model,
+            @ModelAttribute("newUser") @Valid User hoidanit,
+            BindingResult newUserBindingResult,
+            @RequestParam("hoidanitFile") MultipartFile file) {
+
+        List<FieldError> errors = newUserBindingResult.getFieldErrors();
+        for (FieldError error : errors) {
+            System.out.println(">>>>" + error.getField() + " - " + error.getDefaultMessage());
+        }
+
+        // validate
+        if (newUserBindingResult.hasErrors()) {
+            return "admin/user/create";
+        }
+
+        //
+        String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
+        String hashPassword = this.passwordEncoder.encode(hoidanit.getPassword());
+
+        hoidanit.setAvatar(avatar);
+        hoidanit.setPassword(hashPassword);
+        hoidanit.setRole(this.userService.getRoleByName(hoidanit.getRole().getName()));
+        // save
+        this.userService.handleSaveUser(hoidanit);
+        return "redirect:/admin/user";
+    }
 
   @RequestMapping("/admin/user/{id}")
   public String getUserDetailPage(Model model, @PathVariable long id) {
@@ -56,7 +86,7 @@ public class UserController {
     model.addAttribute("id", id);
     User user1 = this.userService.getUserById(id);
     model.addAttribute("user", user1);
-    return "admin/user/show";
+    return "admin/user/detail";
   }
 
   @RequestMapping("/admin/user")
@@ -64,7 +94,7 @@ public class UserController {
     List<User> users = this.userService.getAllUser();
     model.addAttribute("users1", users);
     System.out.println("check:" + users);
-    return "admin/user/tableUser";
+    return "admin/user/show";
   }
 
   @RequestMapping("/admin/user/update/{id}")
@@ -72,7 +102,7 @@ public class UserController {
     model.addAttribute("id", id);
     User user1 = this.userService.getUserById(id);
     model.addAttribute("newUser", user1);
-    return "/admin/user/update";
+    return "admin/user/update";
   }
   @RequestMapping("/admin/user/delete/{id}")
   public String DeleteUser(Model model, @PathVariable long id) {
@@ -81,7 +111,7 @@ public class UserController {
     user1.setId(id);
     model.addAttribute("newUser", user1);
     // this.userService.deleteUser(id);
-    return "/admin/user/delete";
+    return "admin/user/delete";
   }
   @PostMapping("/admin/user/delete")
   public String postDeleteUser(Model model, @ModelAttribute("newUser") User u) {

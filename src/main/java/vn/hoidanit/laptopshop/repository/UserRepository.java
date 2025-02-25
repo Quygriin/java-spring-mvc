@@ -19,4 +19,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
      List<User> findByIdAndAddress(long id, String address);
     //  @Query("select u from user u where u.id=:id")
     //  List<User> moi(@Param("id")Long id);
+    boolean existsByEmail(String email);
+
+    User findByEmail(String email);
 } 
