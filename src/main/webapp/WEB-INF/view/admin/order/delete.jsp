@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+        <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
         <!DOCTYPE html>
         <html lang="en">
 
@@ -17,6 +18,7 @@
 
         <body class="sb-nav-fixed">
             <jsp:include page="../layout/header.jsp"></jsp:include>
+
             <div id="layoutSidenav">
                 <jsp:include page="../layout/sidebar.jsp"></jsp:include>
                 <div id="layoutSidenav_content">
@@ -27,51 +29,36 @@
                                 <li class="breadcrumb-item "><a href="/admin">Dashboard</a></li>
                                 <li class="breadcrumb-item active">Product</li>
                             </ol>
-                            <div class=" mt-5">
+                            <div class="container mt-5">
                                 <div class="">
                                     <div class="col-12 mx-auto">
                                         <div class="d-flex justify-content-between">
-                                            <H1>Table order</H1>
-                                          
+                                            <H1> Delete id=${id}</H1>
                                         </div>
                                         <hr>
-                                        <table class="table table-bordered table-hover mt-5">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Total price</th>
-                                                    <th>User</th>
-                                                    <th>Status</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-
-                                                <c:forEach var="order" items="${orders}">
-                                                    <tr>
-                                                        <th>${order.id}</th>
-                                                        <td>${order.totalPrice}</td>
-                                                        <td>${order.user.fullName}</td>
-                                                        <td>${order.status}</td>
-
-                                                        <td>
-                                                            <a href="/admin/order/${order.id}"
-                                                                class="btn btn-success">View</a>
-                                                            <a href="/admin/order/update/${order.id}"
-                                                                class="btn btn-warning">Update</a>
-                                                            <a href="/admin/order/delete/${order.id}"
-                                                                class="btn btn-danger">Delete</a>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
-
-
-
-                                            </tbody>
+                                        <div class="alert alert-danger" role="alert">
+                                            Xác nhận xóa sản phẩm id=${id}
+                                        </div>
+                
+                
+                                        <form:form action="/admin/order/delete" method="post" modelAttribute="newOrder">
+                                            <div class="mb-3" style="display: none;">
+                                                <label class="form-label">ID</label>
+                                                <form:input type="text" class="form-control" path="id" />
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <button type="submit" class="btn btn-danger">Confirm</button>
+                                                <a href="/admin/order" class="btn btn-success">Back</a>
+                                            </div>
+                
+                                        </form:form>
+                
+                                        </tbody>
                                         </table>
                                     </div>
+                
                                 </div>
+                
                             </div>
                         </div>
                     </main>
@@ -81,7 +68,7 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
                 crossorigin="anonymous"></script>
             <script src="js/scripts.js"></script>
-
+           
         </body>
 
         </html>

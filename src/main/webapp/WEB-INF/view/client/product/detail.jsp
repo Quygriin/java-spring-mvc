@@ -54,7 +54,7 @@
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="/">Home</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm </li> 
+                                        <li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm </li>
                                     </ol>
                                 </nav>
                             </div>
@@ -85,24 +85,32 @@
                                             <i class="fa fa-star"></i>
                                         </div>
                                         <p class="mb-4">${product.detailDesc}</p>
-
-                                        <div class="input-group quantity mb-5" style="width: 100px;">
-                                            <div class="input-group-btn">
-                                                <button class="btn btn-sm btn-minus rounded-circle bg-light border">
-                                                    <i class="fa fa-minus"></i>
-                                                </button>
+                                        <form method="post" action="/add-product-from-view-detail"
+                                            modelAttribute="product">
+                                            <!-- include token CSRF -->
+                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                            <!--  truyền thông tin sản phẩm -->
+                                            <input type="hidden" name="productId" value="${product.id}" />
+                                            <div class="input-group quantity mb-5" style="width: 100px;">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-sm btn-minus rounded-circle bg-light border">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                                <input type="text"
+                                                    class="form-control form-control-sm text-center border-0" value="1"
+                                                    name="quantity">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm text-center border-0"
-                                                value="1">
-                                            <div class="input-group-btn">
-                                                <button class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                                    <i class="fa fa-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <a href="#"
-                                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i
-                                                class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                            <button
+                                                class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i
+                                                    class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                cart</button>
+                                        </form>
                                     </div>
                                     <div class="col-lg-12">
                                         <nav>

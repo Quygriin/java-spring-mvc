@@ -114,12 +114,18 @@
                                                                 <div class="d-flex flex-column align-items-center">
                                                                     <p class="text-dark fw-bold mb-2"
                                                                         style="font-size: 15px;">${product.price}$</p>
-                                                                    <a href="#"
-                                                                        class="btn border border-secondary rounded-pill px-3 text-primary">
-                                                                        <i
-                                                                            class="fa fa-shopping-bag me-2 text-primary"></i>
-                                                                        Add to cart
-                                                                    </a>
+                                                                    <form action="/add-product-to-cart/${product.id}"
+                                                                        method="post">
+                                                                        <input type="hidden"
+                                                                            name="${_csrf.parameterName}"
+                                                                            value="${_csrf.token}" />
+                                                                        <button
+                                                                            class="btn border border-secondary rounded-pill px-3 text-primary"
+                                                                            class="fa fa-shopping-bag me-2 text-primary">
+
+                                                                            Add to cart
+                                                                        </button>
+                                                                    </form>
                                                                 </div>
                                                             </div>
 
@@ -387,7 +393,7 @@
                 <jsp:include page="../layout/feature.jsp"></jsp:include>
 
 
-               
+
 
 
 

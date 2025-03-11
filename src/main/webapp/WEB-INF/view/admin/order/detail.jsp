@@ -25,44 +25,39 @@
                             <h1 class="mt-4">Dashboard</h1>
                             <ol class="breadcrumb mb-4">
                                 <li class="breadcrumb-item "><a href="/admin">Dashboard</a></li>
-                                <li class="breadcrumb-item active">Product</li>
+                                <li class="breadcrumb-item active">Order Detail</li>
                             </ol>
                             <div class=" mt-5">
                                 <div class="">
                                     <div class="col-12 mx-auto">
                                         <div class="d-flex justify-content-between">
-                                            <H1>Table order</H1>
+                                            <H1>Order detail with id = ${order.id}</H1>
                                           
                                         </div>
                                         <hr>
                                         <table class="table table-bordered table-hover mt-5">
                                             <thead>
                                                 <tr>
-                                                    <th>ID</th>
-                                                    <th>Total price</th>
-                                                    <th>User</th>
-                                                    <th>Status</th>
-                                                    <th>Action</th>
+                                                    <th>Sản phẩm </th>
+                                                    <th>Tên </th>
+                                                    <th>Giá cả </th>
+                                                    <th>Số lượng </th>
+                                                    <th>Thành tiền </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
 
 
-                                                <c:forEach var="order" items="${orders}">
+                                                <c:forEach var="orderDetail" items="${orderDetails}">
                                                     <tr>
-                                                        <th>${order.id}</th>
-                                                        <td>${order.totalPrice}</td>
-                                                        <td>${order.user.fullName}</td>
-                                                        <td>${order.status}</td>
+                                                        <td><img src="/images/product/${orderDetail.product.image}"
+                                                            class="img-fluid" width="50"></td>
+                                                        <td><a href="/admin/orderDetail/${orderDetail.product.id}">${orderDetail.product.name}</a></td>
+                                                        <td>${orderDetail.price}</td>
+                                                        <td>${orderDetail.quantity}</td>
+                                                        <td>${orderDetail.quantity * orderDetail.price}</td>
 
-                                                        <td>
-                                                            <a href="/admin/order/${order.id}"
-                                                                class="btn btn-success">View</a>
-                                                            <a href="/admin/order/update/${order.id}"
-                                                                class="btn btn-warning">Update</a>
-                                                            <a href="/admin/order/delete/${order.id}"
-                                                                class="btn btn-danger">Delete</a>
-                                                        </td>
+                                                        
                                                     </tr>
                                                 </c:forEach>
 
